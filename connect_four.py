@@ -22,18 +22,13 @@ class ConnectFour:
     """
 
     def __init__(self, board, current_player=ONE):
-        """
-        Initialize a Connect Four object.
-
-        Since @dataclass is no longer being used, the constructor must
-        be written manually.
-        """
+        """Initialize"""
         self.board = board
         self.current_player = current_player
 
     @classmethod
     def new_game(cls):
-        """Create and return an empty Connect Four board."""
+        """Create and return empty board"""
         board = [
             [EMPTY for column in range(COLUMNS)]
             for row in range(ROWS)
@@ -45,7 +40,7 @@ class ConnectFour:
         )
 
     def copy(self):
-        """Return a deep copy of the current game state."""
+        """Return copy of game state"""
         copied_board = [row[:] for row in self.board]
 
         return ConnectFour(
@@ -55,9 +50,9 @@ class ConnectFour:
 
     def legal_moves(self):
         """
-        Return all columns into which a disc can legally be dropped.
+        Return all columns where we can put legally
 
-        A column is legal when its top cell is empty.
+        (legal when its top cell is empty)
         """
         legal_columns = []
 
@@ -69,15 +64,12 @@ class ConnectFour:
 
     def apply_move(self, column):
         """
-        Return a new game state after the current player drops a disc
-        into the selected column.
+        Return a new game state after player moves
 
-        Gravity is applied by placing the disc in the lowest available
-        cell of the column.
-
-        The original state is not modified.
+        (Gravity replicated by placing in the lowest cell possible of column)
         """
-        if not isinstance(column, int):
+        # Error check inputs
+        if not isnum(column, int):
             raise TypeError("The column must be an integer.")
 
         if column < 0 or column >= COLUMNS:
@@ -90,13 +82,13 @@ class ConnectFour:
 
         new_state = self.copy()
 
-        # Start at the bottom row and search upward.
+        # Start at the bottom row and search upward
         for row in range(ROWS - 1, -1, -1):
             if new_state.board[row][column] == EMPTY:
                 new_state.board[row][column] = self.current_player
                 break
 
-        # Change to the other player.
+        # Change player
         if self.current_player == ONE:
             new_state.current_player = TWO
         else:
@@ -106,21 +98,21 @@ class ConnectFour:
 
     def winner(self):
         """
-        Return the winning player number.
+        Return the winning player num
 
         Returns:
-            1 if Player 1 has won
-            2 if Player 2 has won
-            None if there is currently no winner
+            1 if Player 1 won
+            2 if Player 2 won
+            None if no winner right now
         """
 
-        # Each tuple contains:
-        # (change in row, change in column)
+        # (row change, column change)
+
         directions = [
             (0, 1),    # Horizontal
             (1, 0),    # Vertical
-            (1, 1),    # Down-right diagonal
-            (1, -1)    # Down-left diagonal
+            (1, 1),    # Down diagonal right side
+            (1, -1)    # Down diagonal left side
         ]
 
         for row in range(ROWS):
@@ -141,8 +133,7 @@ class ConnectFour:
                         + (CONNECT_ALL - 1) * column_change
                     )
 
-                    # Skip this direction if the sequence would leave
-                    # the board.
+                    # Skip this direction if it leaves board (out of bound)
                     if not (
                         0 <= end_row < ROWS
                         and 0 <= end_column < COLUMNS
@@ -171,19 +162,14 @@ class ConnectFour:
         return None
 
     def is_draw(self):
-        """
-        Return True when the board is full and neither player has won.
-        """
+        """Return true when board full and no winner"""
         return (
             self.winner() is None
             and len(self.legal_moves()) == 0
         )
 
     def is_terminal(self):
-        """
-        Return True when the game has ended through either a win
-        or a draw.
-        """
+        """Return true when game ended"""
         return (
             self.winner() is not None
             or len(self.legal_moves()) == 0
@@ -191,13 +177,13 @@ class ConnectFour:
 
     def result(self):
         """
-        Return the result of a terminal state.
+        Return the result
 
         Returns:
             1 = Player 1 wins
             2 = Player 2 wins
             0 = draw
-            None = game is not finished
+            None = game not done
         """
         winning_player = self.winner()
 
@@ -210,7 +196,7 @@ class ConnectFour:
         return None
 
     def display(self):
-        """Print the board as a text-based interface."""
+        """Print the board for simple interface"""
         symbols = {
             EMPTY: ".",
             ONE: "X",
@@ -227,5 +213,5 @@ class ConnectFour:
 
             print(f"| {displayed_row} |")
 
-        print("+---------------+")
+        print("-----------------")
         print()
