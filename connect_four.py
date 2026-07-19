@@ -69,7 +69,7 @@ class ConnectFour:
         (Gravity replicated by placing in the lowest cell possible of column)
         """
         # Error check inputs
-        if not isnum(column, int):
+        if not isinstance(column, int):
             raise TypeError("The column must be an integer.")
 
         if column < 0 or column >= COLUMNS:
