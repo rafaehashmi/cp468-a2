@@ -13,7 +13,7 @@ from agents import RandomAgent, RuleBasedAgent, MinimaxAgent
 MASTER_SEED = 42
 GAMES_PER_PAIRING = 30
 
-SHOW_BOARD = True
+SHOW_BOARD = False
 
 
 # =====================================================
